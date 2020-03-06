@@ -46,4 +46,18 @@ class User extends \yii\db\ActiveRecord
             'patronymic' => 'Patronymic',
         ];
     }
+    /**
+     * {@inheritdoc}
+     * @param \Lcobucci\JWT\Token $token
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        foreach (self::$users as $user) {
+            if ($user['id'] === (string) $token->getClaim('uid')) {
+                return new static($user);
+            }
+        }
+
+        return null;
+    }
 }

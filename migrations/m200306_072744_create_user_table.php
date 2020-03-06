@@ -16,6 +16,7 @@ class m200306_072744_create_user_table extends Migration
             'userId' => $this->primaryKey(),
             'phone' => $this->string(),
             'name' => $this->string(),
+            'password' => $this->string(),
             'surname' => $this->string(),
             'patronymic' => $this->string(),
         ]);
@@ -26,6 +27,6 @@ class m200306_072744_create_user_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%user}}');
+        $this->dropTable('{{%users}}');
     }
 }

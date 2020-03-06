@@ -19,12 +19,18 @@ $config = [
                 'application/json' => 'yii\web\JsonParser',
             ]
         ],
+        'jwt' => [
+            'class' => \sizeg\jwt\Jwt::class,
+            'key' => 'secret',
+            // You have to configure ValidationData informing all claims you want to validate the token.
+            'jwtValidationData' => \app\components\JwtValidationData::class,
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableSession' => false,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -49,10 +55,6 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
-            'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
-            ],
         ],
     ],
     'params' => $params,
