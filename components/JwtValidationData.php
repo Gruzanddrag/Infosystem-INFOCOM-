@@ -10,8 +10,8 @@ class JwtValidationData extends \sizeg\jwt\JwtValidationData
      */
     public function init()
     {
-        $this->validationData->setIssuer('http://example.com');
-        $this->validationData->setAudience('http://example.org');
+        $this->validationData->setIssuer('http://localhost:8081');
+        $this->validationData->setAudience('http://localhost:8081');
         $this->validationData->setId('4f1g23a12aa');
 
         parent::init();

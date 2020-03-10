@@ -49,6 +49,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
     }
 
+
+
     /**
      * {@inheritdoc}
      */
