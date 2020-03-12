@@ -25,7 +25,7 @@ $config = [
                 $response = $event->sender;
                 if ($response->data !== null && Yii::$app->request->get('suppress_response_code')) {
                     $response->data = [
-                        'success' => $response->isSuccessful,
+                        'status' => $response->isSuccessful,
                         'data' => $response->data,
                     ];
                     $response->statusCode = 200;
@@ -71,6 +71,11 @@ $config = [
         ],
     ],
     'params' => $params,
+    'modules' => [
+        'umk-control' => [
+            'class' => 'app\umkControl\UmkControl',
+        ],
+    ],
 ];
 
 if (YII_ENV_DEV) {

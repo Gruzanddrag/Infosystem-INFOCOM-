@@ -83,7 +83,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * Gets query for [[Role]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery|UserRoles
      */
     public function getRole()
     {
@@ -104,7 +104,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return static::findOne(['userId' => (string) $token->getClaim('uid')]);
-        // TODO: Implement findIdentityByAccessToken() method.
     }
 
     /**

@@ -1,36 +1,34 @@
 <?php
 
-namespace app\controllers;
+namespace app\umkControl\controllers;
 
 use app\filters\AdminControl;
+use app\filters\HeadControl;
 use sizeg\jwt\JwtHttpBearerAuth;
 use yii\filters\AccessControl;
 use yii\base\InlineAction;
-use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class DataController extends \yii\rest\Controller
 {
 
-    /**
-     * @inheritdoc
-     */
     public function behaviors()
     {
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => JwtHttpBearerAuth::class,
-        ];
-        $behaviors['access'] = [
-            'class' => AdminControl::class
-        ];
 
-        return $behaviors;
+
+        $behaviors = parent::behaviors();
+        // grant access to whole module to admin and head of department
+        $behaviors = array_merge($behaviors, [
+            'department_head_access' =>  [
+                'class' => HeadControl::class
+            ],
+        ]);
+        return parent::behaviors();
     }
 
 
     public function actionIndex()
     {
-        throw new NotFoundHttpException('NONONO');
         return $this->asJson([
             'data' => 'That for admin only',
         ]);
