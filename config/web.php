@@ -12,6 +12,9 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'ejppLS_1EQ1SWuoYbc6SNDn18YE9KaeF',
@@ -36,7 +39,7 @@ $config = [
             'class' => \sizeg\jwt\Jwt::class,
             'key' => 'secret',
             // You have to configure ValidationData informing all claims you want to validate the token.
-            'jwtValidationData' => \app\components\JwtValidationData::class,
+            'jwtValidationData' => \app\components\JWT\JwtValidationData::class,
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -72,8 +75,8 @@ $config = [
     ],
     'params' => $params,
     'modules' => [
-        'umk-control' => [
-            'class' => 'app\umkControl\UmkControl',
+        'umk' => [
+            'class' => 'app\modules\umk\Module',
         ],
     ],
 ];

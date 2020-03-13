@@ -21,6 +21,12 @@ use yii\web\IdentityInterface;
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
+     * Is a access granted for user
+     * @var bool
+     */
+    public $accessGranted = false;
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -58,9 +64,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['roleId'], 'integer'],
-            [['phone', 'name', 'password', 'surname', 'patronymic', 'roleId', 'email'], 'required'],
+            [['phone', 'name', 'password', 'surname', 'patronymic', 'email'], 'required'],
             [['phone', 'name', 'password', 'surname', 'patronymic', 'email'], 'string', 'max' => 255],
-            [['roleId'], 'exist', 'skipOnError' => true, 'targetClass' => Userroles::className(), 'targetAttribute' => ['roleId' => 'roleId']],
         ];
     }
 
@@ -78,16 +83,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'patronymic' => 'Patronymic',
             'roleId' => 'Role ID',
         ];
-    }
-
-    /**
-     * Gets query for [[Role]].
-     *
-     * @return \yii\db\ActiveQuery|UserRoles
-     */
-    public function getRole()
-    {
-        return $this->hasOne(UserRoles::className(), ['roleId' => 'roleId']);
     }
 
     /**
@@ -111,7 +106,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getId()
     {
-        // TODO: Implement getId() method.
+        return $this->userId;
     }
 
     /**
@@ -129,4 +124,5 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         // TODO: Implement validateAuthKey() method.
     }
+
 }

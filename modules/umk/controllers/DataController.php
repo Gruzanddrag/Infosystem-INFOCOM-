@@ -1,44 +1,38 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\umk\controllers;
 
-use app\filters\AdminControl;
+use app\filters\FullApiAccess;
 use sizeg\jwt\JwtHttpBearerAuth;
+use Yii;
 use yii\filters\AccessControl;
 use yii\base\InlineAction;
-use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class DataController extends \yii\rest\Controller
 {
 
-    /**
-     * @inheritdoc
-     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => JwtHttpBearerAuth::class,
-        ];
         $behaviors['access'] = [
-            'class' => AdminControl::class
+            'class' => FullApiAccess::class,
         ];
-
         return $behaviors;
     }
 
 
     public function actionIndex()
     {
-        throw new NotFoundHttpException('NONONO');
         return $this->asJson([
             'data' => 'That for admin only',
         ]);
     }
-
-    public function actionStore()
+    public function actionTest()
     {
-        return $this->render('store');
+        return $this->asJson([
+            'data' => 'That for employee',
+        ]);
     }
 
 }

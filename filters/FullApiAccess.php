@@ -3,22 +3,28 @@
 namespace app\filters;
 
 use Yii;
+use yii\base\ActionFilter;
 use yii\web\ForbiddenHttpException;
 
-class EmployeeControl extends BaseRoleControl
+class FullApiAccess extends ActionFilter
 {
+
     /**
-     * If role department employee - grant access
+     * If role admin - grant access
      * @param \yii\base\Action $action
      * @return bool
      * @throws ForbiddenHttpException
      */
     public function beforeAction($action)
     {
-        if(parent::getUserRole() == 'department_empl'){
-            return parent::beforeAction($action);
+        if (parent::beforeAction($action)) {
+            Yii::error(Yii::$app->user->id . " " .   $action->id);
+            if (!Yii::$app->user->can($action->id)) {
+                throw new ForbiddenHttpException('NO_ACCESS');
+            }
+            return true;
         } else {
-            throw new ForbiddenHttpException('NO_ACCESS');
+            return false;
         }
     }
 

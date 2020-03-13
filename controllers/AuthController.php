@@ -72,18 +72,25 @@ class AuthController extends \yii\rest\Controller
      */
     public function actionRegistration()
     {
+        $role = Yii::$app->request->post('role');
+        Yii::error($role);
         //get JSON from post request
         $user_attrs = Yii::$app->request->post();
         $user = new User();
         $user->attributes = $user_attrs;
+        $transaction = Yii::$app->db->beginTransaction();
         if($user->validate()){
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($user_attrs['password']);
             try {
                 $user->save();
+                $authManager = Yii::$app->authManager;
+                $authManager->assign($authManager->getRole($role), $user->userId);
+                $transaction->commit();
                 return $this->asJson([
                     'status' => true
                 ]);
             } catch (\Exception $e){
+                $transaction->rollBack();
                 return $this->asJson([
                     'status'=> false,
                     'msg' => $e
@@ -92,7 +99,7 @@ class AuthController extends \yii\rest\Controller
         } else {
             return  $this->asJson([
                 'status' => false,
-                'user' => $user->errors
+                'errors' => $user->errors
             ]);
         }
     }
