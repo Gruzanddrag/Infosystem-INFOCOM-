@@ -23,22 +23,20 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 
     public function behaviors()
     {
 
-        $behaviors = parent::behaviors();
+       $behaviors = parent::behaviors();
         // response in json
-//        $behaviors['contentNegotiator'] = [
-//            'class' => 'yii\filters\ContentNegotiator',
-//            'formats' => [
-//                'application/json' => Response::FORMAT_JSON,
-//
-//            ]
-//        ];
+       $behaviors['contentNegotiator'] = [
+           'class' => 'yii\filters\ContentNegotiator',
+           'formats' => [
+               'application/json' => Response::FORMAT_JSON,
+
+           ]
+       ];
         // you have to be authorized to access this module
         $behaviors['authenticator'] = [
             'class' => JwtHttpBearerAuth::class,

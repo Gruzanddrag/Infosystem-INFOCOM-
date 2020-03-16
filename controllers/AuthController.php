@@ -16,16 +16,19 @@ class AuthController extends \yii\rest\Controller
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+
         $behaviors['authenticator'] = [
             'class' => JwtHttpBearerAuth::class,
             'optional' => [
                 'login',
+                'refresh'
             ],
             'except' => [
-                'registration'
+                'registration',
+                'options'
             ]
         ];
-
+        
         return $behaviors;
     }
 
@@ -102,6 +105,40 @@ class AuthController extends \yii\rest\Controller
                 'errors' => $user->errors
             ]);
         }
+    }
+
+    public function actionRefresh(){
+        $data = Yii::$app->jwt->getValidationData();
+        $data->setCurrentTime(time() - 3600);
+        $header = Yii::$app->request->getHeaders()->get('Authorization');
+        $token = Yii::$app->jwt->getParser()->parse((string) explode(' ', $header)[1]);
+        if($token->validate($data)){
+            $user_id = $token->getClaim('uid');
+            $jwt = Yii::$app->jwt;
+            $signer = $jwt->getSigner('HS256');
+            $key = $jwt->getKey();
+            $time = time();
+            $token = $jwt->getBuilder()
+                ->issuedBy('http://localhost:8081')// Configures the issuer (iss claim)
+                ->permittedFor('http://localhost:8081')// Configures the audience (aud claim)
+                ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+                ->issuedAt($time)// Configures the time that the token was issue (iat claim)
+                ->expiresAt($time + 3600)// Configures the expiration time of the token (exp claim)
+                ->withClaim('uid', $user_id)// Configures a new claim, called "uid"
+                ->getToken($signer, $key); // Retrieves the generated token
+            return $this->asJson([
+                'access_token' => (string)$token
+            ]);
+        } else {
+            return $this->asJson([
+                'status' => false
+            ]);
+        }
+    }
+
+    
+    public function actionMe(){
+        return User::findOne(Yii::$app->user->id);
     }
 
 }

@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
+
     /**
      * Is a access granted for user
      * @var bool
@@ -123,6 +124,15 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         // TODO: Implement validateAuthKey() method.
+    }
+    
+    public function fields()
+    {
+        $fields = parent::fields();
+
+        unset($fields['password']);
+
+        return $fields;
     }
 
 }

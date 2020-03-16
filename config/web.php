@@ -20,13 +20,14 @@ $config = [
             'cookieValidationKey' => 'ejppLS_1EQ1SWuoYbc6SNDn18YE9KaeF',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
-            ]
+            ],
         ],
         'response' => [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                if ($response->data !== null && Yii::$app->request->get('suppress_response_code')) {
+                // \Yii::error(Yii::$app->request->get('suppress_response_code'));
+                if ($response->data !== null) {
                     $response->data = [
                         'status' => $response->isSuccessful,
                         'data' => $response->data,
@@ -48,9 +49,6 @@ $config = [
             'identityClass' => 'app\models\User',
             'enableSession' => false,
         ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set
@@ -70,15 +68,28 @@ $config = [
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'showScriptName' => false,          
+            'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/umk'], 'pluralize'=>false],
+            ],
         ],
     ],
     'params' => $params,
     'modules' => [
-        'umk' => [
+        'v1' => [
             'class' => 'app\modules\umk\Module',
         ],
     ],
+    'on beforeAction' => function(){
+        Yii::error('adawdawd');
+        $response = Yii::$app->response;
+        $response->headers->fromArray(array(
+            "Access-Control-Allow-Origin" => ['*'],
+            "Access-Control-Allow-Headers" => ['*'],
+            "Access-Control-Allow-Methods"=> ["*"],
+            "Access-Control-Max-Age" => ["86400"]
+        ));
+    }
 ];
 
 if (YII_ENV_DEV) {
