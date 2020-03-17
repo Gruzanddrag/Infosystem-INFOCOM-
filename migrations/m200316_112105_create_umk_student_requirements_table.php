@@ -7,7 +7,7 @@ use yii\db\Migration;
  * Has foreign keys to the tables:
  *
  * - `{{%umks}}`
- * - `{{%umk_student_requirement_types}}`
+ * - `{{%umk_students_requirement_types}}`
  */
 class m200316_112105_create_umk_student_requirements_table extends Migration
 {
@@ -20,7 +20,7 @@ class m200316_112105_create_umk_student_requirements_table extends Migration
             'studentRequirementId' => $this->primaryKey(),
             'studentRequirementText' => $this->text(),
             'umkId' => $this->integer()->notNull(),
-            'studentRequirementTypeId' => $this->integer()->notNull(),
+            'studentRequirementTypeId' => $this->integer(),
         ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `umkId`
@@ -47,14 +47,14 @@ class m200316_112105_create_umk_student_requirements_table extends Migration
             'studentRequirementTypeId'
         );
 
-        // add foreign key for table `{{%umk_student_requirement_types}}`
+        // add foreign key for table `{{%umk_students_requirement_types}}`
         $this->addForeignKey(
             '{{%fk-umk_student_requirements-studentRequirementTypeId}}',
             '{{%umk_student_requirements}}',
             'studentRequirementTypeId',
-            '{{%umk_student_requirement_types}}',
+            '{{%umk_students_requirement_types}}',
             'studentRequirementTypeId',
-            'CASCADE'
+            'SET NULL'
         );
     }
 
@@ -75,7 +75,7 @@ class m200316_112105_create_umk_student_requirements_table extends Migration
             '{{%umk_student_requirements}}'
         );
 
-        // drops foreign key for table `{{%umk_student_requirement_types}}`
+        // drops foreign key for table `{{%umk_students_requirement_types}}`
         $this->dropForeignKey(
             '{{%fk-umk_student_requirements-studentRequirementTypeId}}',
             '{{%umk_student_requirements}}'

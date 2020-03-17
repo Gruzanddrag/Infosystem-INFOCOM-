@@ -11,6 +11,10 @@ use Yii;
 class AuthController extends \yii\rest\Controller
 {
     /**
+     * token will expire after that time
+     */
+    private $JWT_EXP_TIME = 3600;
+    /**
      * @inheritdoc
      */
     public function behaviors()
@@ -54,18 +58,16 @@ class AuthController extends \yii\rest\Controller
                 ->permittedFor('http://localhost:8081')// Configures the audience (aud claim)
                 ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
                 ->issuedAt($time)// Configures the time that the token was issue (iat claim)
-                ->expiresAt($time + 3600)// Configures the expiration time of the token (exp claim)
+                ->expiresAt($time + $this->JWT_EXP_TIME)// Configures the expiration time of the token (exp claim)
                 ->withClaim('uid', $user->userId)// Configures a new claim, called "uid"
                 ->getToken($signer, $key); // Retrieves the generated token
             return $this->asJson([
-                'status' => true,
-                'access_token' => (string)$token
+                'access_token' => (string)$token,
+                'user' => $user
             ]);
         } else {
-            return  $this->asJson([
-                'status' => false,
-                'user' => $loginForm->errors
-            ]);
+            Yii::$app->response->setStatusCode(401);
+            return  $loginForm->errors;
         }
     }
 
@@ -109,7 +111,7 @@ class AuthController extends \yii\rest\Controller
 
     public function actionRefresh(){
         $data = Yii::$app->jwt->getValidationData();
-        $data->setCurrentTime(time() - 3600);
+        $data->setCurrentTime(time() - $this->JWT_EXP_TIME);
         $header = Yii::$app->request->getHeaders()->get('Authorization');
         $token = Yii::$app->jwt->getParser()->parse((string) explode(' ', $header)[1]);
         if($token->validate($data)){
@@ -123,15 +125,16 @@ class AuthController extends \yii\rest\Controller
                 ->permittedFor('http://localhost:8081')// Configures the audience (aud claim)
                 ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
                 ->issuedAt($time)// Configures the time that the token was issue (iat claim)
-                ->expiresAt($time + 3600)// Configures the expiration time of the token (exp claim)
+                ->expiresAt($time + $this->JWT_EXP_TIME)// Configures the expiration time of the token (exp claim)
                 ->withClaim('uid', $user_id)// Configures a new claim, called "uid"
                 ->getToken($signer, $key); // Retrieves the generated token
             return $this->asJson([
                 'access_token' => (string)$token
             ]);
         } else {
+            Yii::$app->response->setStatusCode(401);
             return $this->asJson([
-                'status' => false
+                'msg' => 'Invalid token'
             ]);
         }
     }

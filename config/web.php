@@ -26,7 +26,7 @@ $config = [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                // \Yii::error(Yii::$app->request->get('suppress_response_code'));
+                \Yii::error($response->data);
                 if ($response->data !== null) {
                     $response->data = [
                         'status' => $response->isSuccessful,
