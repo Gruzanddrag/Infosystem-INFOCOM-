@@ -1,9 +1,10 @@
 <?php
 
 namespace app\models;
+use yii\web\IdentityInterface;
+
 
 use Yii;
-use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "users".
@@ -11,6 +12,7 @@ use yii\web\IdentityInterface;
  * @property int $userId
  * @property string|null $phone
  * @property string|null $name
+ * @property string $email
  * @property string|null $password
  * @property string|null $surname
  * @property string|null $patronymic
@@ -20,13 +22,6 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
-
-    /**
-     * Is a access granted for user
-     * @var bool
-     */
-    public $accessGranted = false;
-
     /**
      * {@inheritdoc}
      */
@@ -34,6 +29,22 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return 'users';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['email'], 'required'],
+            [['roleId'], 'integer'],
+            [['phone', 'name', 'email', 'password', 'surname', 'patronymic'], 'string', 'max' => 255],
+            [['email'], 'unique'],
+            [['roleId'], 'exist', 'skipOnError' => true, 'targetClass' => Userroles::className(), 'targetAttribute' => ['roleId' => 'roleId']],
+        ];
+    }
+
+    
 
     /**
      * Find user by EMAIl
@@ -57,19 +68,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['roleId'], 'integer'],
-            [['phone', 'name', 'password', 'surname', 'patronymic', 'email'], 'required'],
-            [['phone', 'name', 'password', 'surname', 'patronymic', 'email'], 'string', 'max' => 255],
-        ];
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -79,12 +77,14 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'userId' => 'User ID',
             'phone' => 'Phone',
             'name' => 'Name',
+            'email' => 'Email',
             'password' => 'Password',
             'surname' => 'Surname',
             'patronymic' => 'Patronymic',
             'roleId' => 'Role ID',
         ];
     }
+
 
     /**
      * @inheritDoc
@@ -131,8 +131,25 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         $fields = parent::fields();
 
         unset($fields['password']);
-
+            
         return $fields;
+    }
+
+    
+
+    public function extraFields(){
+
+        return[
+            'role' => function() {
+            
+                $roles = Yii::$app->authManager->getRolesByUser($this->userId);
+
+                list($roleName) = each($roles);
+                
+                return $roleName;
+            }
+        ];
+
     }
 
 }

@@ -18,7 +18,7 @@ class FullApiAccess extends ActionFilter
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            Yii::error(Yii::$app->user->id . " " .   $action->id);
+            // Yii::error(Yii::$app->user->id . " " .   $action->id);
             if (!Yii::$app->user->can($action->id)) {
                 throw new ForbiddenHttpException('NO_ACCESS');
             }

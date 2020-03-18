@@ -13,7 +13,7 @@ class AuthController extends \yii\rest\Controller
     /**
      * token will expire after that time
      */
-    private $JWT_EXP_TIME = 3600;
+    private $JWT_EXP_TIME = 60;
     /**
      * @inheritdoc
      */
@@ -63,7 +63,7 @@ class AuthController extends \yii\rest\Controller
                 ->getToken($signer, $key); // Retrieves the generated token
             return $this->asJson([
                 'access_token' => (string)$token,
-                'user' => $user
+                'user' => $user->toArray([], ['role'])
             ]);
         } else {
             Yii::$app->response->setStatusCode(401);
@@ -78,8 +78,6 @@ class AuthController extends \yii\rest\Controller
     public function actionRegistration()
     {
         $role = Yii::$app->request->post('role');
-        Yii::error($role);
-        //get JSON from post request
         $user_attrs = Yii::$app->request->post();
         $user = new User();
         $user->attributes = $user_attrs;
@@ -91,21 +89,19 @@ class AuthController extends \yii\rest\Controller
                 $authManager = Yii::$app->authManager;
                 $authManager->assign($authManager->getRole($role), $user->userId);
                 $transaction->commit();
-                return $this->asJson([
-                    'status' => true
-                ]);
+                return $user->toArray([], ['role']);
             } catch (\Exception $e){
                 $transaction->rollBack();
-                return $this->asJson([
-                    'status'=> false,
+                Yii::$app->response->setStatusCode(401);
+                return [
                     'msg' => $e
-                ]);
+                ];
             }
         } else {
-            return  $this->asJson([
-                'status' => false,
+            Yii::$app->response->setStatusCode(401);
+            return  [
                 'errors' => $user->errors
-            ]);
+            ];
         }
     }
 
@@ -141,7 +137,7 @@ class AuthController extends \yii\rest\Controller
 
     
     public function actionMe(){
-        return User::findOne(Yii::$app->user->id);
+        return User::findOne(Yii::$app->user->id)->toArray([], ['role']);
     }
 
 }

@@ -26,13 +26,14 @@ $config = [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                \Yii::error($response->data);
-                if ($response->data !== null) {
+                if(Yii::$app->request->isOptions){
+                    $response->statusCode=200;
+                    $response->data = NULL;
+                } else if ($response->data !== null) {
                     $response->data = [
                         'status' => $response->isSuccessful,
                         'data' => $response->data,
                     ];
-                    $response->statusCode = 200;
                 }
             },
         ],
@@ -80,8 +81,7 @@ $config = [
             'class' => 'app\modules\umk\Module',
         ],
     ],
-    'on beforeAction' => function(){
-        Yii::error('adawdawd');
+    'on beforeRequest' => function(){
         $response = Yii::$app->response;
         $response->headers->fromArray(array(
             "Access-Control-Allow-Origin" => ['*'],

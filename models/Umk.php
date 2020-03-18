@@ -8,9 +8,15 @@ use Yii;
  * This is the model class for table "umks".
  *
  * @property int $umkId
- * @property string $lawJustification
- * @property string $purpose
- * @property int|null $totalHours
+ * @property string $umkName
+ * @property int $umkTotalHours
+ * @property string|null $umkPurpose
+ * @property string|null $umkLawJustification
+ * @property int $umkStatusId
+ *
+ * @property Sections[] $sections
+ * @property UmkStudentRequirements[] $umkStudentRequirements
+ * @property UmkStatuses $umkStatus
  */
 class Umk extends \yii\db\ActiveRecord
 {
@@ -28,9 +34,11 @@ class Umk extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lawJustification', 'purpose'], 'required'],
-            [['lawJustification', 'purpose'], 'string'],
-            [['totalHours'], 'integer'],
+            [['umkName'], 'required'],
+            [['umkTotalHours', 'umkStatusId'], 'integer'],
+            [['umkPurpose', 'umkLawJustification'], 'string'],
+            [['umkName'], 'string', 'max' => 255],
+            [['umkStatusId'], 'exist', 'skipOnError' => true, 'targetClass' => UmkStatus::className(), 'targetAttribute' => ['umkStatusId' => 'umkStatusId']],
         ];
     }
 
@@ -41,9 +49,41 @@ class Umk extends \yii\db\ActiveRecord
     {
         return [
             'umkId' => 'Umk ID',
-            'lawJustification' => 'Law Justification',
-            'purpose' => 'Purpose',
-            'totalHours' => 'Total Hours',
+            'umkName' => 'Umk Name',
+            'umkTotalHours' => 'Umk Total Hours',
+            'umkPurpose' => 'Umk Purpose',
+            'umkLawJustification' => 'Umk Law Justification',
+            'umkStatusId' => 'Umk Status ID',
         ];
+    }
+
+    /**
+     * Gets query for [[Sections]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSections()
+    {
+        return $this->hasMany(Sections::className(), ['umkId' => 'umkId']);
+    }
+
+    /**
+     * Gets query for [[UmkStudentRequirements]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUmkStudentRequirements()
+    {
+        return $this->hasMany(UmkStudentRequirements::className(), ['umkId' => 'umkId']);
+    }
+
+    /**
+     * Gets query for [[UmkStatus]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUmkStatus()
+    {
+        return $this->hasOne(UmkStatus::className(), ['umkStatusId' => 'umkStatusId']);
     }
 }

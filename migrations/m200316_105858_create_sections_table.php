@@ -20,7 +20,7 @@ class m200316_105858_create_sections_table extends Migration
             'sectionName' => $this->string(),
             'sectionDescription' => $this->text(),
             'umkId' => $this->integer()->notNull(),
-        ]);
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         // creates index for column `umkId`
         $this->createIndex(

@@ -15,7 +15,7 @@ class m200316_111559_create_umk_students_requirement_types_table extends Migrati
         $this->createTable('{{%umk_students_requirement_types}}', [
             'studentRequirementTypeId' => $this->primaryKey(),
             'studentRequirementTypeAlias' => $this->string(),
-        ]);
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
     }
 
     /**

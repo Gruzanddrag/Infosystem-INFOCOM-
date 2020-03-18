@@ -34,12 +34,10 @@ class Module extends \yii\base\Module
            'class' => 'yii\filters\ContentNegotiator',
            'formats' => [
                'application/json' => Response::FORMAT_JSON,
-
            ]
        ];
-        // you have to be authorized to access this module
         $behaviors['authenticator'] = [
-            'class' => JwtHttpBearerAuth::class,
+            'class' => JwtHttpBearerAuth::class
         ];
 
         return $behaviors;
