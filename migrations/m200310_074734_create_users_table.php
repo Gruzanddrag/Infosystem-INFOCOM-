@@ -24,7 +24,7 @@ class m200310_074734_create_users_table extends Migration
             'surname' => $this->string(),
             'patronymic' => $this->string(),
             'roleId' => $this->integer(),
-        ]);
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
         // creates index for column `roleId`
         $this->createIndex(
             '{{%idx-users-roleId}}',

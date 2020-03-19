@@ -13,7 +13,7 @@ class AuthController extends \yii\rest\Controller
     /**
      * token will expire after that time
      */
-    private $JWT_EXP_TIME = 60;
+    private $JWT_EXP_TIME = 3600;
     /**
      * @inheritdoc
      */

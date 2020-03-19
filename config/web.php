@@ -16,7 +16,6 @@ $config = [
             'class' => 'yii\rbac\PhpManager',
         ],
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'ejppLS_1EQ1SWuoYbc6SNDn18YE9KaeF',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
@@ -26,6 +25,8 @@ $config = [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
+                Yii::error($response->data);
+                // if we have options request - return 200 with headers
                 if(Yii::$app->request->isOptions){
                     $response->statusCode=200;
                     $response->data = NULL;
@@ -52,9 +53,6 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
         'log' => [
@@ -72,6 +70,8 @@ $config = [
             'showScriptName' => false,          
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/umk'], 'pluralize'=>false],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/disciplines']],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/student-requirement-type']],
             ],
         ],
     ],

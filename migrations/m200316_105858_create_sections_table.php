@@ -45,6 +45,8 @@ class m200316_105858_create_sections_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropTable('{{%umk_statuses}}');
+        
         // drops foreign key for table `{{%umks}}`
         $this->dropForeignKey(
             '{{%fk-sections-umkId}}',

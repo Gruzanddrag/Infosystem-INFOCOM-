@@ -36,6 +36,7 @@ class Module extends \yii\base\Module
                'application/json' => Response::FORMAT_JSON,
            ]
        ];
+       // check auth
         $behaviors['authenticator'] = [
             'class' => JwtHttpBearerAuth::class
         ];

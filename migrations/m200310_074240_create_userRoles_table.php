@@ -15,7 +15,7 @@ class m200310_074240_create_userRoles_table extends Migration
         $this->createTable('{{%userRoles}}', [
             'roleId' => $this->primaryKey(),
             'roleAlias' => $this->string(),
-        ]);
+        ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
     }
 
     /**
