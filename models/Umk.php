@@ -74,7 +74,7 @@ class Umk extends \yii\db\ActiveRecord
      */
     public function getUmkStudentRequirements()
     {
-        return $this->hasMany(UmkStudentRequirements::className(), ['umkId' => 'umkId']);
+        return $this->hasMany(StudentRequirement::className(), ['umkId' => 'umkId']);
     }
 
     /**
@@ -86,4 +86,13 @@ class Umk extends \yii\db\ActiveRecord
     {
         return $this->hasOne(UmkStatus::className(), ['umkStatusId' => 'umkStatusId']);
     }
+
+    public function extraFields(){
+        return [
+            'umkStudentRequirements' => function() {
+                return $this->umkStudentRequirements;
+            }
+        ];
+    }
+
 }

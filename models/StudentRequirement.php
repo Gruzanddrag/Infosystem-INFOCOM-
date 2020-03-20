@@ -34,8 +34,8 @@ class StudentRequirement extends \yii\db\ActiveRecord
             [['studentRequirementText'], 'string'],
             [['umkId'], 'required'],
             [['umkId', 'studentRequirementTypeId'], 'integer'],
-            [['studentRequirementTypeId'], 'exist', 'skipOnError' => true, 'targetClass' => UmkStudentsRequirementTypes::className(), 'targetAttribute' => ['studentRequirementTypeId' => 'studentRequirementTypeId']],
-            [['umkId'], 'exist', 'skipOnError' => true, 'targetClass' => Umks::className(), 'targetAttribute' => ['umkId' => 'umkId']],
+            [['studentRequirementTypeId'], 'exist', 'skipOnError' => true, 'targetClass' => StudentRequirementType::className(), 'targetAttribute' => ['studentRequirementTypeId' => 'studentRequirementTypeId']],
+            [['umkId'], 'exist', 'skipOnError' => true, 'targetClass' => Umk::className(), 'targetAttribute' => ['umkId' => 'umkId']],
         ];
     }
 

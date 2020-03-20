@@ -25,7 +25,7 @@ $config = [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                Yii::error($response->data);
+                // Yii::error($response->data);
                 // if we have options request - return 200 with headers
                 if(Yii::$app->request->isOptions){
                     $response->statusCode=200;
