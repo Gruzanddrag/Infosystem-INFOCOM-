@@ -132,14 +132,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
         unset($fields['password']);
             
-        return $fields;
-    }
-
-    
-
-    public function extraFields(){
-
-        return[
+        return array_merge($fields,[
             'role' => function() {
             
                 $roles = Yii::$app->authManager->getRolesByUser($this->userId);
@@ -148,8 +141,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
                 
                 return $roleName;
             }
-        ];
-
+        ]);
     }
+
 
 }

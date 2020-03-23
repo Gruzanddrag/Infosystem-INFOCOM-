@@ -28,7 +28,6 @@ class AuthController extends \yii\rest\Controller
                 'refresh'
             ],
             'except' => [
-                'registration',
                 'options'
             ]
         ];
@@ -77,31 +76,33 @@ class AuthController extends \yii\rest\Controller
      */
     public function actionRegistration()
     {
-        $role = Yii::$app->request->post('role');
-        $user_attrs = Yii::$app->request->post();
-        $user = new User();
-        $user->attributes = $user_attrs;
-        $transaction = Yii::$app->db->beginTransaction();
-        if($user->validate()){
-            $user->password = Yii::$app->getSecurity()->generatePasswordHash($user_attrs['password']);
-            try {
-                $user->save();
-                $authManager = Yii::$app->authManager;
-                $authManager->assign($authManager->getRole($role), $user->userId);
-                $transaction->commit();
-                return $user->toArray([], ['role']);
-            } catch (\Exception $e){
-                $transaction->rollBack();
+        if(Yii::$app->user->can('manageUser')){
+            $role = Yii::$app->request->post('role');
+            $user_attrs = Yii::$app->request->post();
+            $user = new User();
+            $user->attributes = $user_attrs;
+            $transaction = Yii::$app->db->beginTransaction();
+            if($user->validate()){
+                $user->password = Yii::$app->getSecurity()->generatePasswordHash($user_attrs['password']);
+                try {
+                    $user->save();
+                    $authManager = Yii::$app->authManager;
+                    $authManager->assign($authManager->getRole($role), $user->userId);
+                    $transaction->commit();
+                    return $user->toArray([], ['role']);
+                } catch (\Exception $e){
+                    $transaction->rollBack();
+                    Yii::$app->response->setStatusCode(401);
+                    return [
+                        'msg' => $e
+                    ];
+                }
+            } else {
                 Yii::$app->response->setStatusCode(401);
-                return [
-                    'msg' => $e
+                return  [
+                    'errors' => $user->errors
                 ];
             }
-        } else {
-            Yii::$app->response->setStatusCode(401);
-            return  [
-                'errors' => $user->errors
-            ];
         }
     }
 
@@ -135,9 +136,53 @@ class AuthController extends \yii\rest\Controller
         }
     }
 
+    public function actionIndex(){
+        if(Yii::$app->user->can('manageUser')){
+            return User::find()->all();
+        }
+        else {
+            return [
+                'msg' => 'NO_ACCESS'
+            ];
+        }
+    }
+
+    public function actionUpdate($id){
+        if(Yii::$app->user->can('manageUser')){
+            $data = Yii::$app->request->post();
+            $user =  User::findOne($id);
+            $user->attributes = $data;
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $authManager = Yii::$app->authManager;
+                $user->save();
+                // change role
+                $roles = $authManager->getRolesByUser($user->userId);
+                $roleName = array_key_first($roles);
+                Yii::error($data['role']);
+                $authManager->revoke( $authManager->getRole($roleName), $user->userId );
+                $authManager->assign($authManager->getRole($data['role']) , $user->userId );
+                $transaction->commit();
+                return $user->toArray([], ['role']);
+            } catch (\Exception $e){
+                Yii::error($e);
+                $transaction->rollBack();
+                Yii::$app->response->setStatusCode(401);
+                return [
+                    'msg' => $e
+                ];
+            }
+        }
+        else {
+            return [
+                'msg' => 'NO_ACCESS'
+            ];
+        }
+    }
+
     
     public function actionMe(){
-        return User::findOne(Yii::$app->user->id)->toArray([], ['role']);
+        return User::findOne(Yii::$app->user->id)->toArray();
     }
 
 }

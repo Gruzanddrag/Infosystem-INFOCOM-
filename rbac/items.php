@@ -27,7 +27,46 @@ return [
     'create' => [
         'type' => 2,
     ],
-    'test' => [
+    'seeDictionaries' => [
+        'type' => 2,
+    ],
+    'setDictionaries' => [
+        'type' => 2,
+    ],
+    'seeUMK' => [
+        'type' => 2,
+    ],
+    'setUMK' => [
+        'type' => 2,
+    ],
+    'seeResources' => [
+        'type' => 2,
+    ],
+    'setResources' => [
+        'type' => 2,
+    ],
+    'setInternetResources' => [
+        'type' => 2,
+    ],
+    'setNewResource' => [
+        'type' => 2,
+    ],
+    'confirmRequest' => [
+        'type' => 2,
+    ],
+    'denyRequest' => [
+        'type' => 2,
+    ],
+    'completeRequest' => [
+        'type' => 2,
+    ],
+    'confirmUMK' => [
+        'type' => 2,
+    ],
+    'denyUMK' => [
+        'type' => 2,
+    ],
+    'manageUser' => [
         'type' => 2,
     ],
     'guest' => [
@@ -37,6 +76,8 @@ return [
             'logout',
             'error',
             'registration',
+            'seeDictionaries',
+            'seeResources',
             'index',
             'view',
         ],
@@ -47,7 +88,8 @@ return [
             'department-e',
             'library-e',
             'department-h',
-            'test',
+            'setDictionaries',
+            'manageUser',
         ],
     ],
     'department-e' => [
@@ -55,14 +97,22 @@ return [
         'children' => [
             'update',
             'delete',
+            'seeUMK',
+            'setUMK',
             'create',
             'guest',
+            'setInternetResources',
+            'setNewResource',
         ],
     ],
     'department-h' => [
         'type' => 1,
         'children' => [
             'department-e',
+            'confirmRequest',
+            'denyRequest',
+            'confirmUMK',
+            'denyUMK',
         ],
     ],
     'library-e' => [
@@ -72,6 +122,9 @@ return [
             'delete',
             'create',
             'guest',
+            'setResources',
+            'completeRequest',
+            'denyRequest',
         ],
     ],
 ];

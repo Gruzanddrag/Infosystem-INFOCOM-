@@ -18,9 +18,9 @@ class m200320_083916_create_section_disciplines_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%section_disciplines}}', [
+            'sectionDisciplineId' => $this->primaryKey(),
             'sectionId' => $this->integer()->notNull(),
             'disciplineId' => $this->integer()->notNull(),
-            'sectionDisciplineId' => $this->primaryKey(),
             'sectionDisciplineHours' => $this->integer()->defaultValue(0),
             'sectionDisciplineTypeId' => $this->integer()->notNull(),
         ]);

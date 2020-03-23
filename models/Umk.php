@@ -64,7 +64,7 @@ class Umk extends \yii\db\ActiveRecord
      */
     public function getSections()
     {
-        return $this->hasMany(Sections::className(), ['umkId' => 'umkId']);
+        return $this->hasMany(Section::className(), ['umkId' => 'umkId']);
     }
 
     /**
@@ -86,12 +86,39 @@ class Umk extends \yii\db\ActiveRecord
     {
         return $this->hasOne(UmkStatus::className(), ['umkStatusId' => 'umkStatusId']);
     }
+    
+
+    /**
+     * Gets query for [[UmkResources]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUmkResources()
+    {
+        return $this->hasMany(UmkResource::className(), ['umkId' => 'umkId']);
+    }
+
+
+    public function fields(){
+
+        return array_merge(parent::fields(), [
+            'umkStatus' => function(){
+                return $this->umkStatus->umkStatusText;
+            },
+            'resources' => function() {
+                return $this->umkResources;
+            }
+        ]);
+    }
 
     public function extraFields(){
         return [
             'umkStudentRequirements' => function() {
                 return $this->umkStudentRequirements;
-            }
+            },
+            'umkSections' => function() {
+                return $this->sections;
+            },
         ];
     }
 

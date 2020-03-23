@@ -50,6 +50,6 @@ class UmkStatus extends \yii\db\ActiveRecord
      */
     public function getUmks()
     {
-        return $this->hasMany(Umks::className(), ['umkStatusId' => 'umkStatusId']);
+        return $this->hasMany(Umk::className(), ['umkStatusId' => 'umkStatusId']);
     }
 }

@@ -22,6 +22,18 @@ return [
         'admin',
     ],
     4 => [
+        'admin',
+    ],
+    5 => [
+        'library-e',
+    ],
+    9 => [
         'department-e',
+    ],
+    10 => [
+        'department-h',
+    ],
+    11 => [
+        'department-h',
     ],
 ];
