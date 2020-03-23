@@ -37,7 +37,7 @@ class ResourcesController extends \yii\rest\ActiveController
     public function actions(){
         $actions = parent::actions();
         unset($actions['index']);
-        return $action;
+        return $actions;
     }
 
     public function actionIndex(){

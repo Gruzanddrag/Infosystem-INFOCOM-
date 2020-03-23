@@ -35,6 +35,7 @@ class UmkController extends \yii\rest\ActiveController
     {
         $actions = parent::actions();
         unset($actions['update']);
+        unset($actions['create']);
         unset($actions['view']);
         return $actions;
     }
@@ -49,25 +50,7 @@ class UmkController extends \yii\rest\ActiveController
             $umk->attributes = $umk_info;
             $umk->umkStatusId = 2;
             $umk->save();
-            // attach all requiremets
-            foreach($student_requirements as $requirement){
-                $req = new StudentRequirement();
-                if(isset($requirement['studentRequirementId'])){
-                    $req = StudentRequirement::findOne($requirement['studentRequirementId']);
-                }
-                if($requirement['deleted']){
-                    if($req->studentRequirementId){
-                        $req->delete();
-                    }
-                    continue;
-                }
-                $req->attributes = $requirement;
-                $req->umkId = $umk->umkId;
-                $req->save();
-            }
-            // attach all sections
-            $this->saveSection($sections, $umk->umkId);
-            $this->saveUmkResource($umk->umkId, $umk_info['resources']);
+            $this->saveUmkDetails($umk_info, $umk->umkId);
             $transaction->commit();
         } catch (\Exception $e){
             $transaction->rollback();
@@ -80,9 +63,79 @@ class UmkController extends \yii\rest\ActiveController
         
     }
 
+
+    public function actionCreate($id){
+        $umk_info = Yii::$app->request->post();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $umk = new Umk();
+            $umk->attributes = $umk_info;
+            $umk->umkStatusId = 2;
+            $umk->save();
+            $this->saveUmkDetails($umk_info, $umk->umkId);
+            $transaction->commit();
+        } catch (\Exception $e){
+            $transaction->rollback();
+            Yii::error($e);
+            return [
+                'msg' => $e
+            ];
+        }
+        return true;
+        
+    }
+
+    public function actionConfirm($id){
+        if(Yii::$app->user->can('confirmUMK')){
+            $umk = Umk::findOne($id);
+            $umk->umkStatusId = 1;
+            $umk->save();
+            return true;
+        } else {
+            throw new ForbiddenHttpException('NO_ACCESS');
+        }
+    }
+
+    public function actionDeny($id){
+        if(Yii::$app->user->can('denyUMK')){
+            $umk = Umk::findOne($id);
+            $umk->umkStatusId = 3;
+            $umk->save();
+            return true;
+        } else {
+            throw new ForbiddenHttpException('NO_ACCESS');
+        }
+    }
+
+
     public function actionView($id){
         $umk = Umk::findOne($id);
         return $umk->toArray([], ['umkStudentRequirements', 'umkSections']);
+    }
+
+    private function saveUmkDetails($umk_info, $umkId){
+        $student_requirements = $umk_info['umkStudentRequirements'];
+        $sections = $umk_info['sections'];
+        // attach all requiremets
+        foreach($student_requirements as $requirement){
+            $req = new StudentRequirement();
+            if(isset($requirement['studentRequirementId'])){
+                $req = StudentRequirement::findOne($requirement['studentRequirementId']);
+            }
+            if($requirement['deleted']){
+                if($req->studentRequirementId){
+                    $req->delete();
+                }
+                continue;
+            }
+            $req->attributes = $requirement;
+            $req->umkId = $umkId;
+            $req->save();
+        }
+        // attach all sections
+        $this->saveSection($sections, $umkId);
+        $this->saveUmkResource($umkId, $umk_info['resources']);
+        return true;
     }
 
 

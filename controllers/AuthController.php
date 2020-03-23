@@ -77,7 +77,6 @@ class AuthController extends \yii\rest\Controller
     public function actionRegistration()
     {
         if(Yii::$app->user->can('manageUser')){
-            $role = Yii::$app->request->post('role');
             $user_attrs = Yii::$app->request->post();
             $user = new User();
             $user->attributes = $user_attrs;
@@ -87,9 +86,9 @@ class AuthController extends \yii\rest\Controller
                 try {
                     $user->save();
                     $authManager = Yii::$app->authManager;
-                    $authManager->assign($authManager->getRole($role), $user->userId);
+                    $authManager->assign($authManager->getRole($user_attrs['role']), $user->userId);
                     $transaction->commit();
-                    return $user->toArray([], ['role']);
+                    return $user;
                 } catch (\Exception $e){
                     $transaction->rollBack();
                     Yii::$app->response->setStatusCode(401);

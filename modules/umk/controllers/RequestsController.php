@@ -97,7 +97,7 @@ class RequestsController extends \yii\rest\ActiveController
             $req = Request::findOne($id);
             $req->requestStatusId = 3;
             $req->save();
-            $reason = "Приход литературы по заявке:" . ($res->requestType === 'procure' ? 'Закупить' : 'Издать') . ' литиратуру ' . ($req->resource->resourceName) . ' в количесвтве ' . $req->count;
+            $reason = "Приход литературы по заявке:" . ($req->requestType === 'procure' ? 'Закупить' : 'Издать') . ' литиратуру ' . ($req->resource->resourceName) . ' в количесвтве ' . $req->count;
             if(ResourcesController::store($req->resourceId, $reason, $req->count)){
                 $transaction->commit();
                 return $req;

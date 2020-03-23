@@ -12,7 +12,7 @@ class m200320_090757_add_count_to_umk_resources extends Migration
      */
     public function safeUp()
     {
-
+        $this->addColumn('umk_resources', 'count', 'integer')->defaulValue(0)
     }
 
     /**

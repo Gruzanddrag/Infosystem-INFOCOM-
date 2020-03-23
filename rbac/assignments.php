@@ -1,7 +1,7 @@
 <?php
 return [
     8 => [
-        'admin',
+        'department-h',
     ],
     12 => [
         'department-e',
@@ -10,10 +10,10 @@ return [
         'admin',
     ],
     6 => [
-        'department-e',
+        'department-h',
     ],
     7 => [
-        'department-e',
+        'department-h',
     ],
     2 => [
         'admin',
@@ -22,10 +22,10 @@ return [
         'admin',
     ],
     4 => [
-        'admin',
+        'department-e',
     ],
     5 => [
-        'library-e',
+        'department-h',
     ],
     9 => [
         'department-e',
