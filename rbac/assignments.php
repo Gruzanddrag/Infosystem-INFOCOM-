@@ -22,7 +22,7 @@ return [
         'admin',
     ],
     4 => [
-        'department-e',
+        'admin',
     ],
     5 => [
         'department-h',

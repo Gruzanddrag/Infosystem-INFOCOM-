@@ -50,6 +50,6 @@ class RequestStatus extends \yii\db\ActiveRecord
      */
     public function getRequests()
     {
-        return $this->hasMany(Requests::className(), ['requestStatusId' => 'requestStatusId']);
+        return $this->hasMany(Request::className(), ['requestStatusId' => 'requestStatusId']);
     }
 }

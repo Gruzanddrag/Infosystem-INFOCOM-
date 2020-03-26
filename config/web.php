@@ -25,16 +25,17 @@ $config = [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                // Yii::error($response->data);
-                // if we have options request - return 200 with headers
-                if(Yii::$app->request->isOptions){
-                    $response->statusCode=200;
-                    $response->data = NULL;
-                } else if ($response->data !== null) {
-                    $response->data = [
-                        'status' => $response->isSuccessful,
-                        'data' => $response->data,
-                    ];
+                if($response->format !== 'raw') {
+                    // if we have options request - return 200 with headers
+                    if(Yii::$app->request->isOptions){
+                        $response->statusCode=200;
+                        $response->data = NULL;
+                    } else if ($response->data !== null) {
+                        $response->data = [
+                            'status' => $response->isSuccessful,
+                            'data' => $response->data,
+                        ];
+                    }
                 }
             },
         ],

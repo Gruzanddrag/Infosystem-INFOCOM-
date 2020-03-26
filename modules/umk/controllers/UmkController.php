@@ -11,6 +11,7 @@ use app\models\SectionResource;
 use app\models\UmkResource;
 use app\models\SectionDiscipline;
 use yii\web\ForbiddenHttpException;
+use kartik\mpdf\Pdf;
 
 class UmkController extends \yii\rest\ActiveController
 {
@@ -18,16 +19,54 @@ class UmkController extends \yii\rest\ActiveController
     public function beforeAction($action){ 
 
         if(parent::beforeAction($action)){
+            if(!in_array($action->id, ['index', 'view','create', 'update', 'delete'])){
+                return true;
+            }
+
             if(in_array($action->id, ['index', 'view']) && Yii::$app->user->can('seeUMK')){
                 return true;
             }
             if(in_array($action->id, ['create', 'update', 'delete']) && Yii::$app->user->can('setUMK')){
                 return true;
             }
+            throw new ForbiddenHttpException('NO_ACCESS');
+            return false;
         }
-        throw new ForbiddenHttpException('NO_ACCESS');
-        return false;
     }
+    
+    public function actionReport() {
+        // get your HTML raw content without any layouts or scripts
+        $content = $this->renderPartial('index');
+        
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}', 
+             // set mPDF properties on the fly
+            'options' => ['title' => 'Krajee Report Title'],
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>['Krajee Report Header'], 
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+        // return the pdf output as per the destination setting
+        return $pdf->render(); 
+    }
+
 
     public $modelClass='app\models\Umk';
     
@@ -59,8 +98,7 @@ class UmkController extends \yii\rest\ActiveController
                 'msg' => $e
             ];
         }
-        return true;
-        
+        return true; 
     }
 
 
@@ -92,7 +130,7 @@ class UmkController extends \yii\rest\ActiveController
             $umk->save();
             return true;
         } else {
-            throw new ForbiddenHttpException('NO_ACCESS');
+            throw new ForbiddenHttpException('NO_ACCESS33');
         }
     }
 
@@ -107,11 +145,12 @@ class UmkController extends \yii\rest\ActiveController
         }
     }
 
-
     public function actionView($id){
         $umk = Umk::findOne($id);
         return $umk->toArray([], ['umkStudentRequirements', 'umkSections']);
     }
+
+    // PRIVATE METHODS
 
     private function saveUmkDetails($umk_info, $umkId){
         $student_requirements = $umk_info['umkStudentRequirements'];
@@ -138,8 +177,6 @@ class UmkController extends \yii\rest\ActiveController
         return true;
     }
 
-
-    
     /**
      * save section for umk
      * @param array $section
