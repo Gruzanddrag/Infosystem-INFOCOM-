@@ -16,6 +16,10 @@ use kartik\mpdf\Pdf;
 class UmkController extends \yii\rest\ActiveController
 {
 
+
+    public $modelClass='app\models\Umk';
+
+
     public function beforeAction($action){ 
 
         if(parent::beforeAction($action)){
@@ -33,42 +37,7 @@ class UmkController extends \yii\rest\ActiveController
             return false;
         }
     }
-    
-    public function actionReport() {
-        // get your HTML raw content without any layouts or scripts
-        $content = $this->renderPartial('index');
-        
-        // setup kartik\mpdf\Pdf component
-        $pdf = new Pdf([
-            // set to use core fonts only
-            'mode' => Pdf::MODE_CORE, 
-            // A4 paper format
-            'format' => Pdf::FORMAT_A4, 
-            // portrait orientation
-            'orientation' => Pdf::ORIENT_PORTRAIT, 
-            // stream to browser inline
-            'destination' => Pdf::DEST_BROWSER, 
-            // your html content input
-            'content' => $content,  
-            // format content from your own css file if needed or use the
-            // enhanced bootstrap css built by Krajee for mPDF formatting 
-            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
-            // any css to be embedded if required
-            'cssInline' => '.kv-heading-1{font-size:18px}', 
-             // set mPDF properties on the fly
-            'options' => ['title' => 'Krajee Report Title'],
-             // call mPDF methods on the fly
-            'methods' => [ 
-                'SetHeader'=>['Krajee Report Header'], 
-                'SetFooter'=>['{PAGENO}'],
-            ]
-        ]);
-        // return the pdf output as per the destination setting
-        return $pdf->render(); 
-    }
 
-
-    public $modelClass='app\models\Umk';
     
     public function actions()
     {
@@ -101,7 +70,6 @@ class UmkController extends \yii\rest\ActiveController
         return true; 
     }
 
-
     public function actionCreate($id){
         $umk_info = Yii::$app->request->post();
         $transaction = Yii::$app->db->beginTransaction();
@@ -127,10 +95,46 @@ class UmkController extends \yii\rest\ActiveController
         if(Yii::$app->user->can('confirmUMK')){
             $umk = Umk::findOne($id);
             $umk->umkStatusId = 1;
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                foreach ($umk->sections as $sections) {
+                    foreach ($sections->sectionResources as $resource) {
+                        if($resource->resource->resourceTypeId != 3 && !$resource->isBooked){
+                            $reason = "Литература заризервирована под УМК: " . $umk->umkName;
+                            if(!ResourcesController::del($resource->resourceId, $reason, $resource->count)){
+                                throw new \Exception('no');
+                            } else {
+                                $resource->isBooked = true;
+                                $resource->save();
+                            }
+                        }
+                    }
+                }
+                foreach ($umk->umkResources as $resource) {
+                    if($resource->resource->resourceTypeId != 3  && !$resource->isBooked){
+                        $reason = "Литература заризервирована под УМК: " . $umk->umkName;
+                        if(!ResourcesController::del($resource->resourceId, $reason, $resource->count)){
+                            throw new \Exception('no');
+                        }else {
+                            $resource->isBooked = true;
+                            $resource->save();
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $transaction->rollback();
+                $umk->umkStatusId = 4;
+                $umk->save();
+                Yii::$app->response->statusCode = 400;
+                return [
+                    'msg' => 'NO_LIB'
+                ];
+            }
             $umk->save();
+            $transaction->commit();
             return true;
         } else {
-            throw new ForbiddenHttpException('NO_ACCESS33');
+            throw new ForbiddenHttpException('NO_ACCESS');
         }
     }
 
@@ -138,7 +142,41 @@ class UmkController extends \yii\rest\ActiveController
         if(Yii::$app->user->can('denyUMK')){
             $umk = Umk::findOne($id);
             $umk->umkStatusId = 3;
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                foreach ($umk->sections as $sections) {
+                    foreach ($sections->sectionResources as $resource) {
+                        if($resource->resource->resourceTypeId != 3 && $resource->isBooked){
+                            $reason = "Возвращение зарезервированой литературы для УМК: " . $umk->umkName;
+                            if(!ResourcesController::store($resource->resourceId, $reason, $resource->count)){
+                                throw new \Exception('no');
+                            } else {
+                                $resource->isBooked = false;
+                                $resource->save();
+                            }
+                        }
+                    }
+                }
+                foreach ($umk->umkResources as $resource) {
+                    if($resource->resource->resourceTypeId != 3  && $resource->isBooked){
+                        $reason = "Возвращение зарезервированой литературы для УМК: " . $umk->umkName;
+                        if(!ResourcesController::store($resource->resourceId, $reason, $resource->count)){
+                            throw new \Exception('no');
+                        } else {
+                            $resource->isBooked = false;
+                            $resource->save();
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $transaction->rollback();
+                Yii::$app->response->statusCode = 400;
+                return [
+                    'msg' => 'ERORR WHILE STORING'
+                ];
+            }
             $umk->save();
+            $transaction->commit();
             return true;
         } else {
             throw new ForbiddenHttpException('NO_ACCESS');
@@ -232,6 +270,9 @@ class UmkController extends \yii\rest\ActiveController
             }
             $res->attributes = $resource;
             $res->sectionId = $sectionsId;
+            if (!$res->isBooked) {
+                $res->isBooked = false;
+            }
             $res->save();
         }
     }
@@ -253,6 +294,9 @@ class UmkController extends \yii\rest\ActiveController
             }
             $res->attributes = $resource;
             $res->umkId = $umkId;
+            if (!$res->isBooked) {
+                $res->isBooked = false;
+            }
             $res->save();
         }
     }

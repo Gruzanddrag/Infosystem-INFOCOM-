@@ -113,3 +113,9 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+/* PDF */
+
+.pdf-content {
+    font-family: 'Times New Roman', Times, serif;
+}

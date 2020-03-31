@@ -89,6 +89,20 @@ class RequestsController extends \yii\rest\ActiveController
         }
     }
 
+    public function actionTurnDown($id)
+    {
+        if(Yii::$app->user->can('denyRequest')){
+            $req = Request::findOne($id);
+            $req->requestStatusId = 5;
+            $req->save();
+            return $req;
+        } else {
+            return [
+                'message' => "NO_ACCESS"
+            ];
+        }
+    }
+
 
     public function actionComplete($id)
     {

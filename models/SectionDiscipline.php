@@ -50,7 +50,7 @@ class SectionDiscipline extends \yii\db\ActiveRecord
             'sectionId' => 'Section ID',
             'disciplineId' => 'Discipline ID',
             'sectionDisciplineId' => 'Section Discipline ID',
-            'sectionDisciplineHours' => 'Section Discipline Hours',
+            'sectionDisciplineHours' => 'Количество часов',
             'sectionDisciplineTypeId' => 'Section Discipline Type ID',
         ];
     }
@@ -72,7 +72,7 @@ class SectionDiscipline extends \yii\db\ActiveRecord
      */
     public function getSectionDisciplineType()
     {
-        return $this->hasOne(nDisciplineTypes::className(), ['sectionDisciplineTypeId' => 'sectionDisciplineTypeId']);
+        return $this->hasOne(DisciplineType::className(), ['sectionDisciplineTypeId' => 'sectionDisciplineTypeId']);
     }
 
     /**

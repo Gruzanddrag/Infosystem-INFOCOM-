@@ -1,0 +1,94 @@
+.pdf-content {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+}
+
+.pdf-content .umk-block {
+    margin-bottom: 1.5em;
+}
+
+.pdf-content .umk-title {
+    text-align: center;
+    font-weight: normal;
+    margin-bottom: 3em;
+}
+
+.pdf-content .umk-block .umk-block--title{
+    font-size: 14pt;
+    text-indent: 2em; 
+}
+
+.pdf-content .umk-block .umk-block--text{
+    text-align: justify;
+    text-indent: 2.5em; 
+    line-height: 1.5;
+}
+
+.pdf-content .umk-block .umk-block--text p{
+    margin-bottom: 0;
+}
+
+
+.pdf-content .umk-block--student-requrement {
+    margin-left: 2.5em; 
+}
+
+.pdf-content .umk-block--student-requrement-alias {
+    font-style: italic;
+}
+
+.pdf-content .umk-block .umk-block--sections-section .umk-block--sections-section-details {
+    margin-left: 2.5em;
+}
+
+.umk-block--sections-section-details > div{
+    border: 1px solid red;
+}
+
+.pdf-content .umk-block .umk-block--sections-section-disciplines a {
+    color: black;
+    text-decoration: none;
+}
+
+.pdf-content .umk-block .umk-block--sections-section-disciplines table{
+    display: block;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.pdf-content .umk-block .umk-block--sections-section-disciplines table tr td{
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+.pdf-content .umk-block .umk-block--sections-section-disciplines table thead{
+    background: black !important;
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+.pdf-content .umk-ul {
+    padding: 0;
+}
+.pdf-content .umk-ol {
+    padding: 0;
+}
+
+.pdf-content .umk-ol h3 { 
+    font-weight: normal;
+}
+
+.pdf-content .umk-resource-booked {
+    color: #0D47A1;
+}
+
+.pdf-content .umk-resource-stable {
+    color: #43A047;
+}
+
+.pdf-content .umk-resource-unstable {
+    color: #D32F2F;
+}

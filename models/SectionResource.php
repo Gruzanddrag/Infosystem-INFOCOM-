@@ -47,7 +47,7 @@ class SectionResource extends \yii\db\ActiveRecord
             'id' => 'ID',
             'sectionId' => 'Section ID',
             'resourceId' => 'Resource ID',
-            'count' => 'Count',
+            'count' => 'Количество',
         ];
     }
 
@@ -71,7 +71,22 @@ class SectionResource extends \yii\db\ActiveRecord
         return $this->hasOne(Section::className(), ['sectionId' => 'sectionId']);
     }
 
-    
+    public function getResourceState(){
+        if($this->isBooked){
+            return 'booked';
+        } else {
+            $res = Resource::findOne($this->resourceId);
+            if($this->count <= $res->resourceCountAvalible) {
+                return 'stable';
+            } else {
+                return 'unstable';
+            }
+        }
+    }
+
+    public function getNonInternetResources(){
+        return $this->hasOne(Resource::className(), ['resourceId' => 'resourceId'])->where('resourceTypeId != :inet', [':inet' => 3]);
+    }
     
     public function fields(){
         return array_merge(parent::fields(), [

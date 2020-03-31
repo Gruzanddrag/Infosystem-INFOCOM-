@@ -120,6 +120,7 @@ class ResourcesController extends \yii\rest\ActiveController
                 'resourceMovementDate' => date("Y-m-d H:i:s"),
                 'resourceMovementTypeId' => 2,
                 'resourceMovementReason' => $reason,
+                'resourceMovementCountDescription' => "+".$count,
                 'resourceMovementCountState' => $res->resourceCountAvalible,
                 'resourceId' => $res->resourceId
             ];
@@ -137,6 +138,9 @@ class ResourcesController extends \yii\rest\ActiveController
                 $res->resourceCountAvalible = 0;
             }
             $res->resourceCountAvalible -= $count;
+            if($res->resourceCountAvalible < 0) {
+                throw new \Exception("Error Processing Request");
+            }
             $res->isAvalible = true;
             $res->save();
             $resorceMovement = new ResourceMovement();
@@ -144,6 +148,7 @@ class ResourcesController extends \yii\rest\ActiveController
                 'resourceMovementDate' => date("Y-m-d H:i:s"),
                 'resourceMovementTypeId' => 1,
                 'resourceMovementReason' => $reason,
+                'resourceMovementCountDescription' => "-".$count,
                 'resourceMovementCountState' => $res->resourceCountAvalible,
                 'resourceId' => $res->resourceId
             ];

@@ -25,7 +25,7 @@ return [
         'admin',
     ],
     5 => [
-        'department-h',
+        'library-e',
     ],
     9 => [
         'department-e',

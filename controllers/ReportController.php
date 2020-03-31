@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\umk\controllers;
+namespace app\controllers;
 
 use yii\web\Response;
 use Yii;
@@ -9,16 +9,7 @@ use app\models\StudentRequirementType;
 use kartik\mpdf\Pdf;
 
 class ReportController extends \yii\web\Controller
-{
-
-    public function behaviours(){
-
-        $behaviours = parent::behaviours();
-
-
-    }
-
-    
+{ 
     public function actionUmk($id) {
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         $umk = Umk::findOne($id);
@@ -42,6 +33,16 @@ class ReportController extends \yii\web\Controller
         $pdf->content = $content;
         // return the pdf output as per the destination setting
         return $pdf->render(); 
+    }
+
+    
+    public function actionViewUmk($id) {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        $umk = Umk::findOne($id);
+        return $this->render('umk', [
+            'umk' => $umk,
+            'requirements' => StudentRequirementType::find()->all()
+        ]); 
     }
 
 }

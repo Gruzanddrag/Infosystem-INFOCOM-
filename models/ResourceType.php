@@ -39,7 +39,7 @@ class ResourceType extends \yii\db\ActiveRecord
     {
         return [
             'resourceTypeId' => 'Resource Type ID',
-            'resourceTypeAlias' => 'Resource Type Alias',
+            'resourceTypeAlias' => 'Тип литературы',
         ];
     }
 

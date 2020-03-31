@@ -37,7 +37,7 @@ class Discipline extends \yii\db\ActiveRecord
     {
         return [
             'disciplineId' => 'Discipline ID',
-            'disciplineName' => 'Discipline Name',
+            'disciplineName' => 'Наименование дисциплины',
         ];
     }
 }

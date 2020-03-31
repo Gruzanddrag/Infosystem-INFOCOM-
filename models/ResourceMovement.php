@@ -34,7 +34,7 @@ class ResourceMovement extends \yii\db\ActiveRecord
             [['resourceMovementDate', 'resourceId'], 'required'],
             [['resourceMovementDate'], 'safe'],
             [['resourceMovementTypeId', 'resourceId', 'resourceMovementCountState'], 'integer'],
-            [['resourceMovementReason'], 'string', 'max' => 255],
+            [['resourceMovementReason', 'resourceMovementCountDescription'], 'string', 'max' => 255],
             [['resourceId'], 'exist', 'skipOnError' => true, 'targetClass' => Resource::className(), 'targetAttribute' => ['resourceId' => 'resourceId']],
             [['resourceMovementTypeId'], 'exist', 'skipOnError' => true, 'targetClass' => ResourceMovementType::className(), 'targetAttribute' => ['resourceMovementTypeId' => 'resourceMovementTypeId']],
         ];

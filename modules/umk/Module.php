@@ -35,7 +35,6 @@ class Module extends \yii\base\Module
            'formats' => [
                'application/json' => Response::FORMAT_JSON,
            ],
-           'except' => ['report']
        ];
        // check auth
         $behaviors['authenticator'] = [

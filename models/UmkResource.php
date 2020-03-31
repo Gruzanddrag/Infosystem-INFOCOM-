@@ -47,7 +47,7 @@ class UmkResource extends \yii\db\ActiveRecord
             'umkResourceId' => 'Umk Resource ID',
             'umkId' => 'Umk ID',
             'resourceId' => 'Resource ID',
-            'count' => 'Count',
+            'count' => 'Количество',
         ];
     }
 
@@ -71,6 +71,19 @@ class UmkResource extends \yii\db\ActiveRecord
         return $this->hasOne(Umk::className(), ['umkId' => 'umkId']);
     }
     
+    public function getResourceState(){
+        if($this->isBooked){
+            return 'booked';
+        } else {
+            $res = Resource::findOne($this->resourceId);
+            if($this->count <= $res->resourceCountAvalible) {
+                return 'stable';
+            } else {
+                return 'unstable';
+            }
+        }
+    }
+
     public function fields(){
         return array_merge(parent::fields(), [
             'resourceName' => function() {

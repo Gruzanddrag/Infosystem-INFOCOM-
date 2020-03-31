@@ -40,7 +40,7 @@ class DisciplineType extends \yii\db\ActiveRecord
     {
         return [
             'sectionDisciplineTypeId' => 'Section Discipline Type ID',
-            'sectionDisciplineTypeName' => 'Section Discipline Type Name',
+            'sectionDisciplineTypeName' => 'Тип занятий',
         ];
     }
 

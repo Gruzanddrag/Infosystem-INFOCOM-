@@ -50,10 +50,10 @@ class Resource extends \yii\db\ActiveRecord
     {
         return [
             'resourceId' => 'Resource ID',
-            'resourceName' => 'Resource Name',
-            'resourceCountAvalible' => 'Resource Count Avalible',
+            'resourceName' => 'Наименование литературы',
+            'resourceCountAvalible' => 'Количество на складе',
             'resourceTypeId' => 'Resource Type ID',
-            'resourceUrl' => 'Resource Url',
+            'resourceUrl' => 'URL адрес источника',
         ];
     }
 

@@ -74,6 +74,15 @@ class Section extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[SectionResources]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNonInetSectionResources()
+    {
+        return $this->hasMany(SectionResource::className(), ['sectionId' => 'sectionId'])->joinWith('resource')->where('resources.resourceTypeId != :inet', [':inet' => 3]);
+    }
+    /**
      * Gets query for [[Umk]].
      *
      * @return \yii\db\ActiveQuery

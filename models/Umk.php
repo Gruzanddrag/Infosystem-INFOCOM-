@@ -68,6 +68,16 @@ class Umk extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Sections]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSectionsWithResources()
+    {
+        return $this->hasMany(Section::className(), ['umkId' => 'umkId'])->where();
+    }
+
+    /**
      * Gets query for [[UmkStudentRequirements]].
      *
      * @return \yii\db\ActiveQuery
@@ -96,6 +106,28 @@ class Umk extends \yii\db\ActiveRecord
     public function getUmkResources()
     {
         return $this->hasMany(UmkResource::className(), ['umkId' => 'umkId']);
+    }
+
+    /**
+     * Gets query for [[SectionResources]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNonInetUmkResources()
+    {
+        return $this->hasMany(UmkResource::className(), ['umkId' => 'umkId'])->joinWith('resource')->where('resources.resourceTypeId != :inet', [':inet' => 3]);
+    }
+
+    
+    public function getUmkStudentRequirementsByType($typeId)
+    {
+        return $this->hasMany(StudentRequirement::className(), ['umkId' => 'umkId'])
+            ->where('studentRequirementTypeId = :id', [':id' => $typeId]);
+    }
+
+    public function getAllResources() {
+        $allResourceQuery = $this->getUmkResources();
+        
     }
 
 
